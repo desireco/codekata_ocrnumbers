@@ -103,6 +103,8 @@ class BankOCR
   end
 end
 
-INPUT_FILE = 'numbers_file.txt'
-ocr = BankOCR.new
-ocr.process_file(INPUT_FILE)
+if defined?(ARGV) && ARGV.size > 0
+  filename = ARGV.first
+  ocr = BankOCR.new
+  ocr.process_file(filename)
+end
