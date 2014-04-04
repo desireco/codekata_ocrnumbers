@@ -225,4 +225,19 @@ describe "Bank OCR" do
       expect(ocr.calculate_checksum("012345678")).to be_false
     end
   end
+
+  context "user story 3 - display status" do
+    it "displays no error status with nothing" do
+      expect(ocr.recognition_status("000000051")).to eq("")
+    end
+
+    it "displays ILL for not recognized chars" do
+      expect(ocr.recognition_status("49006771?")).to eq("ILL")
+      expect(ocr.recognition_status("1234?678?")).to eq("ILL")
+    end
+
+    it "displays ERR for failed checksum" do
+      expect(ocr.recognition_status("888888888")).to eq("ERR")
+    end
+  end
 end

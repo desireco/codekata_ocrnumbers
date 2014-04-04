@@ -59,6 +59,16 @@ class BankOCR
     numbers
   end
 
+  def recognition_status(result)
+    if result.match(/\?/)
+      return "ILL"
+    elsif !calculate_checksum(result)
+      return "ERR"
+    else
+      return ""
+    end
+  end
+
   def process_file(filename)
     line_counter = 0
     number_line = []
@@ -69,7 +79,8 @@ class BankOCR
         line_counter+=1
         if line == " " * 27
           if line_counter == 4
-            puts recognize_numbers(number_line)
+            result = recognize_numbers(number_line)
+            puts "#{result} #{recognition_status(result)}"
           else
             puts "* bad data *"
           end
@@ -92,6 +103,6 @@ class BankOCR
   end
 end
 
-#INPUT_FILE = 'numbers_file.txt'
-#ocr = BankOCR.new
-#ocr.process_file(INPUT_FILE)
+INPUT_FILE = 'numbers_file.txt'
+ocr = BankOCR.new
+ocr.process_file(INPUT_FILE)
