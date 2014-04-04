@@ -5,6 +5,10 @@ class BankOCR
     "|_|  ||_  _|  | _||_|  ||_| _|"
   ]
 
+  def initialize
+    @number_matrices = get_number_matrices()
+  end
+
   def validate_line(input_lines)
     valid = true
     valid = false if input_lines.size != 3
@@ -28,8 +32,7 @@ class BankOCR
   end
 
   def recognize_number(n)
-    numbers = get_number_matrices()
-    numbers.each_with_index do |template, i|
+    @number_matrices.each_with_index do |template, i|
       return i if template == n
     end
     return "?"
@@ -69,35 +72,22 @@ class BankOCR
     end
   end
 
+  def process_record(lines)
+    result = recognize_numbers(lines)
+    puts "#{result} #{recognition_status(result)}"
+  end
+
   def process_file(filename)
-    line_counter = 0
-    number_line = []
-    File.open(filename, "r") do |f|
-      f.each_line do |line|
-        # remove line end char
-        line.gsub!(/\n?/, "")
-        line_counter+=1
-        if line == " " * 27
-          if line_counter == 4
-            result = recognize_numbers(number_line)
-            puts "#{result} #{recognition_status(result)}"
-          else
-            puts "* bad data *"
-          end
-          number_line = []
-          line_counter = 0
-        else
-          number_line << line
-        end
-      end
-    end
+    doc = File.open(filename, "r").read()
+    lines = doc.split("\n")
+    process_record(lines)
   end
 
   def calculate_checksum(numbers)
-    checksum = 0
-    # can I use inject here and how?
-    numbers.reverse.split("").each.with_index do |n, i|
-      checksum += n.to_i * (i + 1)
+    i = 0
+    checksum = numbers.reverse.split("").inject(0) do |checksum, n|
+      i += 1
+      checksum + n.to_i * i 
     end
     return checksum % 11 == 0
   end
