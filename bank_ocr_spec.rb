@@ -46,7 +46,7 @@ describe "Bank OCR" do
       ]
     end
 
-    it "returns array of 9 matrices" do
+    it "returns array of 10 matrices" do
       numbers = ocr.parse_line(inp)
       expect(numbers.size).to eq(9)
     end
@@ -62,26 +62,34 @@ describe "Bank OCR" do
 
     it "returns proper matrix for 5" do
       numbers = ocr.parse_line(inp)
-      number_1 = []
-      number_1 << " _ "
-      number_1 << "|_ "
-      number_1 << " _|"
-      expect(numbers[4]).to eq(number_1)
+      number_5 = []
+      number_5 << " _ "
+      number_5 << "|_ "
+      number_5 << " _|"
+      expect(numbers[4]).to eq(number_5)
+    end
+    it "returns proper matrix for 9" do
+      numbers = ocr.parse_line(inp)
+      number_9 = []
+      number_9 << " _ "
+      number_9 << "|_|"
+      number_9 << " _|"
+      expect(numbers[8]).to eq(number_9)
     end
   end
 
   context "#recognize_number" do
     let (:number_def) do
       inp = [
-        "    _  _     _  _  _  _  _ ",
-        "  | _| _||_||_ |_   ||_||_|",
-        "  ||_  _|  | _||_|  ||_| _|"
+        " _     _  _     _  _  _  _  _ ",
+        "| |  | _| _||_||_ |_   ||_||_|",
+        "|_|  ||_  _|  | _||_|  ||_| _|"
       ]
     end
 
     it "can recognize valid numbers" do
       ocr.parse_line(number_def).each_with_index do |n, i|
-        expect(ocr.recognize_number(n)).to eq(i + 1)
+        expect(ocr.recognize_number(n)).to eq(i)
       end
     end
 
@@ -105,12 +113,110 @@ describe "Bank OCR" do
       expect(ocr.recognize_numbers(inp)).to eq("123456789")
     end
 
+    it "recognize zero" do
+      inp = [
+        " _  _  _  _  _  _  _  _  _ ",
+        "| || || || || || || || || |",
+        "|_||_||_||_||_||_||_||_||_|"
+      ]
+      expect(ocr.recognize_numbers(inp)).to eq("000000000")
+    end
+
+    it "recognize one" do
+      inp = [
+        "                           ",
+        "  |  |  |  |  |  |  |  |  |",
+        "  |  |  |  |  |  |  |  |  |"
+      ]
+      expect(ocr.recognize_numbers(inp)).to eq("111111111")
+    end
+
+    it "recognize two" do
+      inp = [
+        " _  _  _  _  _  _  _  _  _ ",
+        " _| _| _| _| _| _| _| _| _|",
+        "|_ |_ |_ |_ |_ |_ |_ |_ |_ "
+      ]
+      expect(ocr.recognize_numbers(inp)).to eq("222222222")
+    end
+
+    it "recognize three" do
+      inp = [
+        " _  _  _  _  _  _  _  _  _ ",
+        " _| _| _| _| _| _| _| _| _|",
+        " _| _| _| _| _| _| _| _| _|"
+      ]
+      expect(ocr.recognize_numbers(inp)).to eq("333333333")
+    end
+
+    it "recognize four" do
+      inp = [
+        "                           ",
+        "|_||_||_||_||_||_||_||_||_|",
+        "  |  |  |  |  |  |  |  |  |"
+      ]
+      expect(ocr.recognize_numbers(inp)).to eq("444444444")
+    end
+
+    it "recognize five" do
+      inp = [
+        " _  _  _  _  _  _  _  _  _ ",
+        "|_ |_ |_ |_ |_ |_ |_ |_ |_ ",
+        " _| _| _| _| _| _| _| _| _|"
+      ]
+      expect(ocr.recognize_numbers(inp)).to eq("555555555")
+    end
+
+
+    it "recognize six" do
+      inp = [
+        " _  _  _  _  _  _  _  _  _ ",
+        "|_ |_ |_ |_ |_ |_ |_ |_ |_ ",
+        "|_||_||_||_||_||_||_||_||_|"
+      ]
+      expect(ocr.recognize_numbers(inp)).to eq("666666666")
+    end
+
+
+    it "recognize seven" do
+      inp = [
+        " _  _  _  _  _  _  _  _  _ ",
+        "  |  |  |  |  |  |  |  |  |",
+        "  |  |  |  |  |  |  |  |  |"
+      ]
+      expect(ocr.recognize_numbers(inp)).to eq("777777777")
+    end
+
+    it "recognize eight" do
+      inp = [
+        " _  _  _  _  _  _  _  _  _ ",
+        "|_||_||_||_||_||_||_||_||_|",
+        "|_||_||_||_||_||_||_||_||_|"
+      ]
+      expect(ocr.recognize_numbers(inp)).to eq("888888888")
+    end
+
+    it "recognize nine" do
+      inp = [
+        " _  _  _  _  _  _  _  _  _ ",
+        "|_||_||_||_||_||_||_||_||_|",
+        " _| _| _| _| _| _| _| _| _|"
+      ]
+      expect(ocr.recognize_numbers(inp)).to eq("999999999")
+    end
+
     it "reports on lines that are invalid" do
       inp = []
       inp << "   _  _     _  _  _  _  _ "
       inp << " | _| _||_||_ |_   ||_||_| " # this line is longer
       inp << " ||_  _|  | _||_|  ||_| _|"
       expect(ocr.recognize_numbers(inp)).to eq("* bad data *")
+    end
+  end
+
+  context "user story 2 - calculate checksum" do
+    it "calculate checksum" do
+
     end
   end
 end

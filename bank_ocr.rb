@@ -1,8 +1,8 @@
 class BankOCR
   NUMBERS = [
-    "    _  _     _  _  _  _  _ ",
-    "  | _| _||_||_ |_   ||_||_|",
-    "  ||_  _|  | _||_|  ||_| _|"
+    " _     _  _     _  _  _  _  _ ",
+    "| |  | _| _||_||_ |_   ||_||_|",
+    "|_|  ||_  _|  | _||_|  ||_| _|"
   ]
 
   def validate_line(input_lines)
@@ -28,11 +28,23 @@ class BankOCR
   end
 
   def recognize_number(n)
-    numbers = parse_line(NUMBERS)
+    numbers = get_number_matrices()
     numbers.each_with_index do |template, i|
-      return i + 1 if template == n
+      return i if template == n
     end
     return "?"
+  end
+
+  def get_number_matrices
+    numbers = []
+    (0..9).each do |i|
+      matrix = []
+      NUMBERS.each do |scan_line| 
+        matrix << scan_line[i*3, 3]
+      end
+      numbers << matrix
+    end
+    numbers
   end
 
   def parse_line(input_line)
