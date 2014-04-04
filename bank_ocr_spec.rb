@@ -216,7 +216,13 @@ describe "Bank OCR" do
 
   context "user story 2 - calculate checksum" do
     it "calculate checksum" do
+      expect(ocr.calculate_checksum("711111111")).to be_true
+      expect(ocr.calculate_checksum("123456789")).to be_true
+      expect(ocr.calculate_checksum("490867715")).to be_true
 
+      expect(ocr.calculate_checksum("888888888")).to be_false
+      expect(ocr.calculate_checksum("490067715")).to be_false
+      expect(ocr.calculate_checksum("012345678")).to be_false
     end
   end
 end

@@ -81,6 +81,15 @@ class BankOCR
       end
     end
   end
+
+  def calculate_checksum(numbers)
+    checksum = 0
+    # can I use inject here and how?
+    numbers.reverse.split("").each.with_index do |n, i|
+      checksum += n.to_i * (i + 1)
+    end
+    return checksum % 11 == 0
+  end
 end
 
 #INPUT_FILE = 'numbers_file.txt'
